@@ -71,12 +71,15 @@ Post.belongsTo(User);
 Comment.belongsTo(User);
 Comment.belongsTo(Post);
 
-sequelize.sync()
-  .then((data) => {
-    console.log('Table and model synced successfully')
-  })
-  .catch((error) => {
-    console.log('Error syncing the table and model')
-  })
+// sequelize.sync()
+//   .then((data) => {
+//     console.log('Table and model synced successfully')
+//   })
+//   .catch((error) => {
+//     console.log('Error syncing the table and model')
+//   })
 
-module.exports = { sequelize };
+module.exports = { 
+  User,
+  sequelize 
+};

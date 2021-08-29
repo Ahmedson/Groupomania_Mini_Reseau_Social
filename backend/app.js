@@ -2,6 +2,9 @@ const express = require('express');
 
 const { sequelize } = require('./models/Models')
 
+const postRoutes = require('./routes/post');
+const userRoutes = require('./routes/user');
+
 sequelize.authenticate()
   .then(() => {
     console.log('Connection has been established successfully.');
@@ -23,5 +26,10 @@ app.use((req, res, next) => {
 });
 
 app.use(express.json());
+
+// Enregistrement du routeur pour les posts sur le chemin //auth
+app.use('/post', postRoutes);
+// Enregistrement du routeur pour les utilisateurs sur le chemin /auth
+app.use('/auth', userRoutes);
 
 module.exports = app;
