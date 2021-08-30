@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, DataTypes, STRING } = require('sequelize');
 
 const sequelize = new Sequelize('groupomania', 'root', 'root', {
   host: 'localhost',
@@ -13,6 +13,10 @@ const Post = sequelize.define('post', {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
   },
   post: {
     type: DataTypes.TEXT,
@@ -67,11 +71,32 @@ const Comment = sequelize.define('comment', {
   }
 });
 
-Post.belongsTo(User);
-Comment.belongsTo(User);
-Comment.belongsTo(Post);
+User.hasMany(Post, {
+  foreignKey: "user_id",
+  constraints: false
+});
+Post.belongsTo(User, {
+  foreignKey: "user_id",
+  constraints: false
+})
+User.hasMany(Comment, {
+  foreignKey: "user_id",
+  constraints: false
+});
+Comment.belongsTo(User, {
+  foreignKey: "user_id",
+  constraints: false
+})
+Post.hasMany(Comment, {
+  foreignKey: "post_id",
+  constraints: false
+});
+Comment.belongsTo(Post, {
+  foreignKey: "post_id",
+  constraints: false
+})
 
-// sequelize.sync()
+// sequelize.sync({ alter: true})
 //   .then((data) => {
 //     console.log('Table and model synced successfully')
 //   })
@@ -81,5 +106,6 @@ Comment.belongsTo(Post);
 
 module.exports = { 
   User,
+  Post,
   sequelize 
 };
