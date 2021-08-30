@@ -7,16 +7,15 @@ const express = require('express');
 const router = express.Router();
 
 // Importation du contrôleur pour les users
-const postCtrl = require('../controllers/post');
+const commentCtrl = require('../controllers/comment');
 
 // application des fonctions du contrôleur à chaque route 
 // [attention à ne pas appeler les fonctions]
-router.get('/', postCtrl.getAllPost);
-router.get('/:id', postCtrl.getOnePost);
-router.post('/', postCtrl.createPost);
-router.put('/:id', postCtrl.modifyPost);
-router.delete('/:id', postCtrl.deletePost);
-// router.post('/:id/like', postCtrl.likePost);
+router.get('/', commentCtrl.getAllCommentOnOnePost);
+router.get('/:id', commentCtrl.getOneComment);
+router.get('/', commentCtrl.createComment);
+router.put('/:id', commentCtrl.modifyComment);
+router.delete('/:id', commentCtrl.deleteComment);
 
 // Exportation du routeur
 module.exports = router;

@@ -3,6 +3,7 @@ const express = require('express');
 const { sequelize } = require('./models/Models')
 
 const postRoutes = require('./routes/post');
+const commentRoutes = require('./routes/comment');
 const userRoutes = require('./routes/user');
 
 sequelize.authenticate()
@@ -27,7 +28,9 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
-// Enregistrement du routeur pour les posts sur le chemin //auth
+// Enregistrement du routeur pour les posts sur le chemin /comment
+app.use('/comment', commentRoutes);
+// Enregistrement du routeur pour les posts sur le chemin /post
 app.use('/post', postRoutes);
 // Enregistrement du routeur pour les utilisateurs sur le chemin /auth
 app.use('/auth', userRoutes);
