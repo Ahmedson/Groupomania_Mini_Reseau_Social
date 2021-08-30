@@ -1,0 +1,111 @@
+<template>
+  <form @submit="checkForm" class="form" action="">
+    <label for="firstName">Prénom</label><br /><input
+      v-model="firstName"
+      class="form--input"
+      type="text"
+      name="firstName"
+      id="firstName"
+    /><br />
+    <label for="lastName">Nom</label><br /><input
+      v-model="lastName"
+      class="form--input"
+      type="text"
+      name="lastName"
+      id="lastName"
+    /><br />
+    <label for="email">Email</label><br /><input
+      v-model="email"
+      class="form--input"
+      type="text"
+      name="email"
+      id="email"
+    /><br />
+    <label for="password">Mot de passe</label><br /><input
+      v-model="password"
+      class="form--input"
+      type="password"
+      name="password"
+      id="password"
+    /><br />
+    <p class="warning" v-if="errorMsg">{{ errorMsg }}</p>
+    <div class="form--div">
+      <router-link to="/">je possède déjà un compte</router-link>
+      <button @click="checkForm" type="submit">S'inscrire</button>
+    </div>
+  </form>
+</template>
+
+<script>
+export default {
+  name: "SignupForm",
+  data() {
+    return {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      errorMsg: null,
+    };
+  },
+  methods: {
+    checkForm(e) {
+      e.preventDefault();
+      if (this.firstName.length < 2) {
+        this.errorMsg = "Votre prénom doit comporter au moins 2 caractères";
+        return;
+      } else if (this.lastName.length < 2) {
+        this.errorMsg = "Votre nom doit comporter au moins 2 caractères";
+        return;
+      } else if (this.email.length === 0) {
+        this.errorMsg = "Veuillez saisir votre adresse mail";
+        return;
+      } else if (this.password.length === 0) {
+        this.errorMsg = "Veuillez saisir votre mot de passe";
+        return;
+      }
+      this.signupEvent();
+    },
+    async signupEvent() {
+      let firstName = this.firstName;
+      let lastName = this.lastName;
+      let email = this.email;
+      let password = this.password;
+      const user = {
+        firstName,
+        lastName,
+        email,
+        password,
+      };
+      const response = await fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
+        },
+        body: JSON.stringify(user),
+      })
+        .then(function (res) {
+          if (res.ok) {
+            return res.json();
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      if (response.emailAlreadyUsed) {
+        this.errorMsg = "Adresse mail déjà utilisée";
+      } else {
+        this.$router.push({ path: "/home" });
+      }
+    },
+  },
+};
+</script>
+
+<style scoped lang="scss">
+.warning {
+  color: red;
+}
+</style>
