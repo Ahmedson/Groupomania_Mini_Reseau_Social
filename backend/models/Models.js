@@ -22,7 +22,7 @@ const Post = sequelize.define('post', {
     type: DataTypes.TEXT,
     allowNull: false
   }
-});
+  });
 
 /**
  * COMMENT
@@ -42,7 +42,7 @@ const Comment = sequelize.define('comment', {
 /**
  * USER
  */
- const User = sequelize.define('user', {
+const User = sequelize.define('user', {
   user_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -104,9 +104,9 @@ Comment.belongsTo(Post, {
 //     console.log('Error syncing the table and model')
 //   })
 
-module.exports = { 
+module.exports = {
   User,
   Post,
   Comment,
-  sequelize 
+  sequelize
 };

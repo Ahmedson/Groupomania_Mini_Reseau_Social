@@ -17,7 +17,7 @@
     <p class="warning">{{ errorMsg }}</p>
     <div class="form--div">
       <router-link to="/signup">Créer un compte</router-link>
-      <button @submit="checkForm" type="submit">Se connecter</button>
+      <button class="form--btn" @submit="checkForm" type="submit">Se connecter</button>
     </div>
   </form>
 </template>
@@ -46,11 +46,9 @@ export default {
       this.loginEvent();
     },
     async loginEvent() {
-      let email = this.email;
-      let password = this.password;
       const user = {
-        email,
-        password,
+        email: this.email,
+        password: this.password,
       };
       const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
@@ -68,7 +66,6 @@ export default {
         .catch(function (error) {
           console.log(error);
         });
-      console.log(response);
       if (response) {
         this.$router.push({ path: "/home" });
       } else {
@@ -80,8 +77,4 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.warning {
-  color: red;
-}
-</style>
+<style scoped lang="scss"></style>

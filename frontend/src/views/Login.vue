@@ -1,5 +1,8 @@
 <template>
-  <LoginForm />
+  <div class="form--div__bg">
+    <img class="logoLogin" src="../assets/logoLogin.png" alt="" />
+    <LoginForm />
+  </div>
 </template>
 
 <script>

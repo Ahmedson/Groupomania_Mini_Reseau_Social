@@ -11,7 +11,7 @@ const commentCtrl = require('../controllers/comment');
 
 // application des fonctions du contrôleur à chaque route 
 // [attention à ne pas appeler les fonctions]
-router.get('/', commentCtrl.getAllCommentOnOnePost);
+router.post('/', commentCtrl.getAllCommentOnOnePost);
 router.get('/:id', commentCtrl.getOneComment);
 router.get('/', commentCtrl.createComment);
 router.put('/:id', commentCtrl.modifyComment);

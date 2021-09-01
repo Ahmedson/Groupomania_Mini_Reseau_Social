@@ -31,7 +31,7 @@
     <p class="warning" v-if="errorMsg">{{ errorMsg }}</p>
     <div class="form--div">
       <router-link to="/">je possède déjà un compte</router-link>
-      <button @click="checkForm" type="submit">S'inscrire</button>
+      <button class="form--btn" @click="checkForm" type="submit">S'inscrire</button>
     </div>
   </form>
 </template>
@@ -104,8 +104,4 @@ export default {
 };
 </script>
 
-<style scoped lang="scss">
-.warning {
-  color: red;
-}
-</style>
+<style scoped lang="scss"></style>
