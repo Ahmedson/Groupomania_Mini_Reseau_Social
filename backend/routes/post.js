@@ -14,8 +14,8 @@ const postCtrl = require('../controllers/post');
 router.get('/', postCtrl.getAllPost);
 router.get('/:id', postCtrl.getOnePost);
 router.post('/', postCtrl.createPost);
-router.put('/:id', postCtrl.modifyPost);
-router.delete('/:id', postCtrl.deletePost);
+router.put('/modify/:id', postCtrl.modifyPost);
+router.delete('/delete/:id', postCtrl.deletePost);
 // router.post('/:id/like', postCtrl.likePost);
 
 // Exportation du routeur

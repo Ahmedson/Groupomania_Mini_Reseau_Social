@@ -4,19 +4,16 @@
     <h1>Groupomania Social Network</h1>
     <router-link to="/home">Textes</router-link> |
     <router-link to="/home/multimedia">Multimédia</router-link>
-    <Post />
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
-import Post from "../components/Post.vue";
 
 export default {
-  name: "Home",
+  name: "HomeM",
   components: {
     Header,
-    Post,
   },
 };
 </script>

@@ -23,6 +23,18 @@ body,
   margin-bottom: 2rem;
 }
 
+.btn {
+  border: 1px solid rgb(233, 67, 38);
+  background-color: white;
+  border-radius: 0.3rem;
+  padding: 0.2rem 1rem;
+  color: rgb(233, 67, 38);
+  font-weight: bold;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 // Style des formulaires LoginForm.vue & SignupForm.vue
 .form {
   // background-color: #42b983;
@@ -31,17 +43,6 @@ body,
   border-radius: 0.5rem;
   margin: 0 auto;
   text-align: left;
-  &--btn {
-    border: 1px solid rgb(233, 67, 38);
-    background-color: white;
-    border-radius: 0.3rem;
-    padding: 0.3rem 1rem;
-    color: rgb(233, 67, 38);
-    font-weight: bold;
-    &:hover {
-      cursor: pointer;
-    }
-  }
   &--input {
     margin-bottom: 1rem;
     width: 20rem;

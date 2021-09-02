@@ -31,7 +31,7 @@
     <p class="warning" v-if="errorMsg">{{ errorMsg }}</p>
     <div class="form--div">
       <router-link to="/">je possède déjà un compte</router-link>
-      <button class="form--btn" @click="checkForm" type="submit">S'inscrire</button>
+      <button class="btn" @click="checkForm" type="submit">S'inscrire</button>
     </div>
   </form>
 </template>

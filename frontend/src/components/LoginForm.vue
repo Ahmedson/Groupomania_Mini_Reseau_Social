@@ -17,7 +17,7 @@
     <p class="warning">{{ errorMsg }}</p>
     <div class="form--div">
       <router-link to="/signup">Créer un compte</router-link>
-      <button class="form--btn" @submit="checkForm" type="submit">Se connecter</button>
+      <button class="btn" @submit="checkForm" type="submit">Se connecter</button>
     </div>
   </form>
 </template>

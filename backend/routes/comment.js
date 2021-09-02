@@ -13,9 +13,9 @@ const commentCtrl = require('../controllers/comment');
 // [attention à ne pas appeler les fonctions]
 router.post('/', commentCtrl.getAllCommentOnOnePost);
 router.get('/:id', commentCtrl.getOneComment);
-router.get('/', commentCtrl.createComment);
-router.put('/:id', commentCtrl.modifyComment);
-router.delete('/:id', commentCtrl.deleteComment);
+router.post('/create', commentCtrl.createComment);
+router.put('/modify/:id', commentCtrl.modifyComment);
+router.delete('/delete/:id', commentCtrl.deleteComment);
 
 // Exportation du routeur
 module.exports = router;
