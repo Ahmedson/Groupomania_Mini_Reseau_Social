@@ -123,9 +123,7 @@ export default {
             Accept: "application/json",
             "Content-Type": "application/json; charset=UTF-8",
           },
-          body: JSON.stringify({
-            post: textarea.value,
-          }),
+          body: JSON.stringify({ post: textarea.value }),
         })
           .then((res) => {
             if (res.ok) {
@@ -133,9 +131,7 @@ export default {
               return res.json();
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch((error) => console.log(error));
       };
     },
     deletePost(e) {
@@ -148,9 +144,7 @@ export default {
             return res.json();
           }
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch((error) => console.log(error));
     },
     deleteComment(e) {
       let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
@@ -161,9 +155,7 @@ export default {
             return res.json();
           }
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch((error) => console.log(error));
     },
     editComment(e) {
       let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
@@ -189,7 +181,6 @@ export default {
       comment.setAttribute("data-state", "edit");
 
       textarea.focus();
-      console.log(textarea.nextElementSibling);
       textarea.parentNode.parentNode.appendChild(btnValidModif);
       textarea.onblur = function () {
         this.parentNode.removeAttribute("data-state");
@@ -201,9 +192,7 @@ export default {
             Accept: "application/json",
             "Content-Type": "application/json; charset=UTF-8",
           },
-          body: JSON.stringify({
-            comment: textarea.value,
-          }),
+          body: JSON.stringify({ comment: textarea.value }),
         })
           .then((res) => {
             if (res.ok) {
@@ -211,9 +200,7 @@ export default {
               return res.json();
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch((error) => console.log(error));
       };
     },
     submitComment(e) {
@@ -240,9 +227,7 @@ export default {
               return res.json();
             }
           })
-          .catch(function (error) {
-            console.log(error);
-          });
+          .catch((error) => console.log(error));
       }
     },
   },
@@ -282,9 +267,7 @@ export default {
         .then((comments) => {
           return (this.comments = comments);
         })
-        .catch(function (error) {
-          console.log(error);
-        });
+        .catch((error) => console.log(error));
     }
   },
 };
@@ -330,9 +313,6 @@ article {
       width: 85%;
       margin: 1rem auto 0;
       white-space: pre-wrap;
-      // div:nth-child(1) {
-      //   // text-align: right;
-      // }
       p:nth-child(2),
       p:nth-child(3) {
         text-align: left;

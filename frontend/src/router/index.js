@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Login from '../views/Login.vue'
 import Home from '../views/Home.vue'
 import HomeM from '../views/HomeM.vue'
+import Profil from '../views/Profil.vue'
 
 const routes = [
   {
@@ -18,6 +19,11 @@ const routes = [
     path: '/home/multimedia',
     name: 'HomeM',
     component: HomeM
+  },
+  {
+    path: '/profil',
+    name: 'Profil',
+    component: Profil
   },
   {
     path: '/signup',
