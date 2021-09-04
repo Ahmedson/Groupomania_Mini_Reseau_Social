@@ -376,6 +376,7 @@ article {
     }
     &--post {
       background-color: white;
+      text-align: left;
       padding: 1rem;
       margin-bottom: 1rem;
       white-space: pre-wrap;

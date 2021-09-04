@@ -56,7 +56,14 @@ export default {
               post: this.contentArticle,
               user_id: tokenUserId,
             }),
-          });
+          })
+            .then((res) => {
+              if (res.ok) {
+                location.reload();
+                return res.json();
+              }
+            })
+            .catch((error) => console.log(error));
           location.reload();
         }
       }, 200);

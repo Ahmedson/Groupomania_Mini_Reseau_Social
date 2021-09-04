@@ -25,6 +25,26 @@ exports.getAllUser = (req, res, next) => {
     .catch(error => res.status(400).json(error))
 }
 
+exports.modifyEmail = (req, res, next) => {
+  User.update({ email: req.body.email }, {
+    where: {
+      user_id: req.params.id
+    }
+  })
+    .then(() => res.status(200).json({ message: "Email modifié" }))
+    .catch(error => res.status(400).json(error))
+}
+
+exports.deleteUser = (req, res, next) => {
+  User.destroy({
+    where: {
+      user_id: req.params.id
+    }
+  })
+    .then(() => res.status(200).json("Utilisateur supprimé !"))
+    .catch(error => res.status(400).json(error))
+}
+
 exports.signup = (req, res, next) => {
   User.findOne({ where: { email: req.body.email } })
     .then(user => {
