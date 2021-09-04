@@ -8,13 +8,15 @@ const router = express.Router();
 
 // Importation du contrôleur pour les users
 const userCtrl = require('../controllers/user');
+const auth = require('../middleware/auth');
 // const checkPassword = require("../middleware/check-password");
 
 // application des fonctions du contrôleur à chaque route 
 // [attention à ne pas appeler les fonctions]
 router.post('/signup', userCtrl.signup);
 router.post('/login', userCtrl.login);
-router.get('/users', userCtrl.getAllUser);
+router.get('/users', auth, userCtrl.getAllUser);
+router.get('/user/:id', auth,  userCtrl.getOneUser);
 
 // Exportation du routeur
 module.exports = router;

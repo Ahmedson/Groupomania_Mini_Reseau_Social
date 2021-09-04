@@ -5,9 +5,19 @@
 // bcrypt est un package de chiffrement (algorithme unidirectionnel de hachage)
 const bcrypt = require('bcrypt');
 
+// JWT sont des jetons générés par un serveur lors de 
+// l'authentification d'un utilisateur sur une application Web
+const jwt = require('jsonwebtoken');
+
 const { User } = require('../models/Models');
 
 // Ici, nous exposons la logique de nos routes en tant que fonctions que nous exportons
+
+exports.getOneUser = (req, res, next) => {
+  User.findOne({ where: { user_id: req.params.id } })
+    .then(user => res.status(200).json(user))
+    .catch(error => res.status(400).json(error))
+}
 
 exports.getAllUser = (req, res, next) => {
   User.findAll()
@@ -33,7 +43,21 @@ exports.signup = (req, res, next) => {
         password: hash
       });
       user.save()
-        .then(() => res.status(201).json({ message: 'Utilisateur enregistré'}))
+        .then(async () =>  {
+          await User.findOne({ where: { email: req.body.email } })
+            .then( async user => {
+              await res.status(201).json({
+                message: 'Utilisateur enregistré',
+                userId : user.user_id,
+                token: jwt.sign(
+                  {userId : user.user_id},
+                  "token_key",
+                  {expiresIn : '8h'})
+                })
+            })
+            .catch(error => res.status(400).json(error))
+          res.status(201).json({ message: 'Utilisateur enregistré'})
+        })
         .catch(error => res.status(400).json(error))
     })
     .catch(error => res.status(500).json(error))
@@ -52,7 +76,11 @@ exports.login = (req, res, next) => {
           }
           res.status(200).json({
             userId : user.user_id,
-            connected: true
+            token: jwt.sign(
+              {userId : user.user_id},
+              "token_key",
+              {expiresIn : '8h'}
+            )
           })
         })
         .catch(error => res.status(500).json(error))

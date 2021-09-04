@@ -22,12 +22,14 @@
             >
               <div class="post post--deleteModify">
                 <small>
-                  <span @click="editComment">Modifier</span> /
-                  <span @click="deleteComment">Supprimer</span> -
-                  <span v-if="comment.createdAt === comment.updatedAt">
+                  <template v-if="comment.user_id === tokenUserId">
+                    <span @click="editComment">Modifier</span> /
+                    <span @click="deleteComment">Supprimer</span> -
+                  </template>
+                  <span v-if="comment.createdAt === comment.updatedAt" class="date-heure">
                     Le : {{ timestampToDateAndHours(comment.createdAt) }}</span
                   >
-                  <span v-else
+                  <span v-else class="date-heure"
                     >Modifié le : {{ timestampToDateAndHours(comment.updatedAt) }}</span
                   >
                 </small>
@@ -37,11 +39,12 @@
             </div>
           </div>
         </div>
+        <div class="separateur"></div>
         <form class="post">
-          <textarea placeholder=" Entrez votre commentaire..."></textarea><br />
+          <textarea placeholder="Écrivez votre commentaire..."></textarea><br />
           <button @click="submitComment" class="btn" type="submit">Commenter</button>
         </form>
-        <div class="post post--deleteModify">
+        <div v-if="post.user_id === tokenUserId" class="post post--deleteModify">
           <small
             ><span @click="editPost">Modifier</span> /
             <span @click="deletePost">Supprimer</span>
@@ -59,6 +62,8 @@ export default {
     return {
       posts: null,
       users: null,
+      tokenToken: null,
+      tokenUserId: null,
       arrayCommentObject: [],
       comments: "",
     };
@@ -78,6 +83,9 @@ export default {
         }
       }
     },
+    addZero(value) {
+      return String(value).length === 1 ? 0 + "" + value : value;
+    },
     timestampToDateAndHours(timestamp) {
       let date = new Date(Date.parse(timestamp));
       let year = date.getFullYear();
@@ -86,7 +94,11 @@ export default {
       let hours = date.getHours();
       let minutes = date.getMinutes();
       let seconds = date.getSeconds();
-      let fullDate = `${day}-${month}-${year} à ${hours}:${minutes}:${seconds}`;
+      let fullDate = `${this.addZero(day)}/${this.addZero(
+        month
+      )}/${year} à ${this.addZero(hours)}:${this.addZero(minutes)}:${this.addZero(
+        seconds
+      )}`;
       return fullDate;
     },
     editPost(e) {
@@ -137,7 +149,14 @@ export default {
     deletePost(e) {
       let postId = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
       console.log(postId);
-      fetch(`http://localhost:3000/post/delete/${postId}`, { method: "DELETE" })
+      fetch(`http://localhost:3000/post/delete/${postId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + this.tokenToken,
+        },
+      })
         .then((res) => {
           if (res.ok) {
             location.reload();
@@ -148,7 +167,14 @@ export default {
     },
     deleteComment(e) {
       let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
-      fetch(`http://localhost:3000/comment/delete/${commentId}`, { method: "DELETE" })
+      fetch(`http://localhost:3000/comment/delete/${commentId}`, {
+        method: "DELETE",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + this.tokenToken,
+        },
+      })
         .then((res) => {
           if (res.ok) {
             location.reload();
@@ -161,6 +187,7 @@ export default {
       let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
       let comment =
         e.currentTarget.parentNode.parentNode.nextElementSibling.nextElementSibling;
+      let token = this.tokenToken;
       if (comment.getAttribute("data-state")) return;
 
       let text = comment.textContent || comment.innerHTML;
@@ -191,6 +218,7 @@ export default {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + token,
           },
           body: JSON.stringify({ comment: textarea.value }),
         })
@@ -214,11 +242,12 @@ export default {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + this.tokenToken,
           },
           body: JSON.stringify({
             comment: commentValue,
             post_id: postId,
-            user_id: 2,
+            user_id: this.tokenUserId,
           }),
         })
           .then((res) => {
@@ -232,8 +261,13 @@ export default {
     },
   },
   async mounted() {
+    let token = JSON.parse(localStorage.getItem("token"));
+    this.tokenToken = token.token;
+    this.tokenUserId = token.userId;
     // Récupère tous les posts
-    await fetch("http://localhost:3000/post")
+    await fetch("http://localhost:3000/post", {
+      headers: { Authorization: "Bearer " + this.tokenToken },
+    })
       .then((data) => {
         return data.json();
       })
@@ -243,7 +277,9 @@ export default {
       .catch((error) => console.log(error));
 
     // Récupère tous les utilisateurs
-    await fetch("http://localhost:3000/auth/users")
+    await fetch("http://localhost:3000/auth/users", {
+      headers: { Authorization: "Bearer " + this.tokenToken },
+    })
       .then((data) => {
         return data.json();
       })
@@ -258,6 +294,7 @@ export default {
         headers: {
           Accept: "application/json",
           "Content-Type": "application/json; charset=UTF-8",
+          Authorization: "Bearer " + this.tokenToken,
         },
         body: JSON.stringify({ post_id: this.posts[i].post_id }),
       })
@@ -277,12 +314,13 @@ export default {
 @mixin border-bottom() {
   border-bottom: 1px solid rgb(233, 67, 38);
 }
+$borderRadius: 0.5rem;
 
 article {
   width: 70%;
   margin: auto;
   margin-top: 2rem;
-  border-radius: 0.5rem;
+  border-radius: $borderRadius;
   background-color: rgb(255, 245, 245);
   padding: 1rem;
   .info {
@@ -307,6 +345,7 @@ article {
       padding: 1rem;
       margin-bottom: 1rem;
       white-space: pre-wrap;
+      border-radius: $borderRadius;
     }
     &--comments {
       border-top: 1px solid rgb(233, 67, 38);
@@ -327,16 +366,27 @@ article {
         cursor: pointer;
         text-decoration: underline;
       }
-      span:nth-child(3) {
+      span.date-heure {
         cursor: initial;
       }
     }
+  }
+  .separateur {
+    height: 1px;
+    background-color: rgb(233, 67, 38);
+    width: 85%;
+    margin: auto;
+    margin-top: 1rem;
   }
   textarea {
     margin: 1rem auto 0;
     width: 80%;
     height: 3rem;
     white-space: pre;
+    outline: none;
+    border: 0;
+    border-radius: $borderRadius;
+    padding: 0.5rem;
   }
   button {
     margin-top: 0.5rem;

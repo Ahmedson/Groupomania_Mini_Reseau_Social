@@ -67,6 +67,7 @@ export default {
           console.log(error);
         });
       if (response) {
+        localStorage.setItem("token", JSON.stringify(response));
         this.$router.push({ path: "/home" });
       } else {
         this.errorMsg = "Nom d'utilisateur ou mot de passe incorrect";

@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div v-if="theUser">
     <Header />
     <h1>Groupomania Social Network</h1>
-    <h2>Profil de UserName</h2>
+    <h2>Profil de {{ theUser.firstName }} {{ theUser.lastName }}</h2>
     <article>
       <div class="div-photo">
         <div>PHOTO DE PROFIL</div>
@@ -13,9 +13,10 @@
       </div>
       <div>
         <h3>Informations personnelles</h3>
-        <p>Date de création :</p>
-        <p>Prénom : Jean - Nom : Jack</p>
-        <p>Adresse email :</p>
+        <p>Date de création : {{ timestampToDateAndHours(theUser.createdAt) }}</p>
+        <p>Nom : {{ theUser.lastName }}</p>
+        <p>Prénom : {{ theUser.firstName }}</p>
+        <p>Adresse email : {{ theUser.email }}</p>
         <div>
           <button class="btn" type="button">Modifier adresse email</button>
           <button class="btn" type="button">Supprimer mon compte</button>
@@ -28,8 +29,53 @@
 <script>
 import Header from "../components/Header.vue";
 export default {
-  components: { Header },
   name: "Profil",
+  components: { Header },
+  data() {
+    return {
+      theUser: null,
+      theUserId: null,
+      theUserIdToken: null,
+    };
+  },
+  methods: {
+    addZero(value) {
+      return String(value).length === 1 ? 0 + "" + value : value;
+    },
+    timestampToDateAndHours(timestamp) {
+      let date = new Date(Date.parse(timestamp));
+      let year = date.getFullYear();
+      let month = date.getMonth() + 1;
+      let day = date.getDate();
+      let hours = date.getHours();
+      let minutes = date.getMinutes();
+      let seconds = date.getSeconds();
+      let fullDate = `${this.addZero(day)}/${this.addZero(
+        month
+      )}/${year} à ${this.addZero(hours)}:${this.addZero(minutes)}:${this.addZero(
+        seconds
+      )}`;
+      return fullDate;
+    },
+  },
+  async mounted() {
+    let token = JSON.parse(localStorage.getItem("token"));
+    this.theUserIdToken = token.token;
+    this.theUserId = token.userId;
+
+    await fetch(`http://localhost:3000/auth/user/${this.theUserId}`, {
+      headers: {
+        Authorization: "Bearer " + this.theUserIdToken,
+      },
+    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((user) => {
+        this.theUser = user;
+      })
+      .catch((error) => console.log(error));
+  },
 };
 </script>
 

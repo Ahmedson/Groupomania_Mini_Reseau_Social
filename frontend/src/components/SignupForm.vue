@@ -97,6 +97,7 @@ export default {
       if (response.emailAlreadyUsed) {
         this.errorMsg = "Adresse mail déjà utilisée";
       } else {
+        localStorage.setItem("token", JSON.stringify(response));
         this.$router.push({ path: "/home" });
       }
     },

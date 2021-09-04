@@ -17,7 +17,6 @@ import Navigation from "./Nav.vue";
 export default {
   components: { Navigation },
   name: "Header",
-  props: ["route", "linkName"],
 };
 </script>
 
