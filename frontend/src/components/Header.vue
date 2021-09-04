@@ -39,7 +39,7 @@ header {
 
 @media (max-width: 550px) {
   img {
-    height: 2rem;
+    height: 12rem;
   }
 }
 </style>

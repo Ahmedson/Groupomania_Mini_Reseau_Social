@@ -61,9 +61,9 @@ body,
       align-items: center;
     }
   }
-  .warning {
-    color: red;
-    margin-bottom: 0.7rem;
-  }
+}
+.warning {
+  color: red;
+  margin-bottom: 0.7rem;
 }
 </style>

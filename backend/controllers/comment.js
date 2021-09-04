@@ -7,7 +7,7 @@ exports.createComment = (req, res, next) => {
     user_id: req.body.user_id
   })
   comment.save()
-    .then(() => res.status(201).json({ message: "Commentaire posté" }))
+    .then(() => res.status(201).json({ message: "Commentaire posté", comment_id : comment.comment_id }))
     .catch(error => res.status(400).json(error))
 }
 

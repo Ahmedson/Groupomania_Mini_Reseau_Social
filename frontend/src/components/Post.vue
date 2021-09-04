@@ -15,6 +15,7 @@
       <div>
         <div v-for="commentObject in arrayCommentObject" :key="commentObject.comment_id">
           <div v-for="comment in commentObject" :key="comment.comment_id">
+            <!-- Commentaires -->
             <div
               :id="comment.comment_id"
               class="post post--comments"
@@ -39,9 +40,38 @@
             </div>
           </div>
         </div>
+        <!-- Affichage du dernier commentaire -->
+        <div v-for="lastComment in arrayLastComments" :key="lastComment.comment_id">
+          <div
+            class="post post--comments"
+            v-if="lastComment && post.post_id === lastComment.post_id"
+          >
+            <div class="post post--deleteModify">
+              <small>
+                <template v-if="lastComment.user_id === tokenUserId">
+                  <span @click="editComment">Modifier</span> /
+                  <span @click="deleteComment">Supprimer</span> -
+                </template>
+                <span
+                  v-if="lastComment.createdAt === lastComment.updatedAt"
+                  class="date-heure"
+                >
+                  Le : {{ timestampToDateAndHours(lastComment.createdAt) }}</span
+                >
+                <span v-else class="date-heure"
+                  >Modifié le : {{ timestampToDateAndHours(lastComment.updatedAt) }}</span
+                >
+              </small>
+            </div>
+            <p>{{ userName(lastComment.user_id) }} :</p>
+            <p>- {{ lastComment.comment }}</p>
+          </div>
+        </div>
         <div class="separateur"></div>
+        <!-- Zone d'écriture des commentaires -->
         <form class="post">
-          <textarea placeholder="Écrivez votre commentaire..."></textarea><br />
+          <textarea placeholder="Écrivez votre commentaire..."></textarea>
+          <br />
           <button @click="submitComment" class="btn" type="submit">Commenter</button>
         </form>
         <div v-if="post.user_id === tokenUserId" class="post post--deleteModify">
@@ -66,6 +96,7 @@ export default {
       tokenUserId: null,
       arrayCommentObject: [],
       comments: "",
+      arrayLastComments: [],
     };
   },
   watch: {
@@ -236,6 +267,7 @@ export default {
       let commentValue =
         e.currentTarget.previousElementSibling.previousElementSibling.value;
       let postId = e.currentTarget.parentNode.parentNode.parentNode.id;
+      let element = e.currentTarget.previousElementSibling.previousElementSibling;
       if (commentValue.length > 0) {
         fetch("http://localhost:3000/comment/create", {
           method: "POST",
@@ -251,10 +283,19 @@ export default {
           }),
         })
           .then((res) => {
-            if (res.ok) {
-              location.reload();
-              return res.json();
-            }
+            return res.json();
+          })
+          .then(async (response) => {
+            await fetch(`http://localhost:3000/comment/${response.comment_id}`, {
+              headers: { Authorization: "Bearer " + this.tokenToken },
+            })
+              .then(async (res) => {
+                return await res.json();
+              })
+              .then(async (lastComment) => {
+                await this.arrayLastComments.push(lastComment);
+                element.value = "";
+              });
           })
           .catch((error) => console.log(error));
       }
@@ -314,15 +355,8 @@ export default {
 @mixin border-bottom() {
   border-bottom: 1px solid rgb(233, 67, 38);
 }
-$borderRadius: 0.5rem;
 
 article {
-  width: 70%;
-  margin: auto;
-  margin-top: 2rem;
-  border-radius: $borderRadius;
-  background-color: rgb(255, 245, 245);
-  padding: 1rem;
   .info {
     display: flex;
     justify-content: space-between;
@@ -345,7 +379,7 @@ article {
       padding: 1rem;
       margin-bottom: 1rem;
       white-space: pre-wrap;
-      border-radius: $borderRadius;
+      border-radius: 0.5rem;
     }
     &--comments {
       border-top: 1px solid rgb(233, 67, 38);
@@ -368,6 +402,7 @@ article {
       }
       span.date-heure {
         cursor: initial;
+        text-decoration: none;
       }
     }
   }
@@ -385,11 +420,17 @@ article {
     white-space: pre;
     outline: none;
     border: 0;
-    border-radius: $borderRadius;
+    border-radius: 0.5rem;
     padding: 0.5rem;
   }
   button {
     margin-top: 0.5rem;
+  }
+}
+
+@media (max-width: 550px) {
+  article {
+    width: 85%;
   }
 }
 </style>

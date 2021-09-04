@@ -28,7 +28,7 @@
       name="password"
       id="password"
     /><br />
-    <p class="warning" v-if="errorMsg">{{ errorMsg }}</p>
+    <p v-if="errorMsg" class="warning">{{ errorMsg }}</p>
     <div class="form--div">
       <router-link to="/">je possède déjà un compte</router-link>
       <button class="btn" @click="checkForm" type="submit">S'inscrire</button>

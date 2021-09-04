@@ -4,24 +4,29 @@
     <h1>Groupomania Social Network</h1>
     <router-link to="/home">Textes</router-link> |
     <router-link to="/home/multimedia">Multimédia</router-link>
-    <Post />
+    <Publication />
+    <Posts />
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
-import Post from "../components/Post.vue";
+import Posts from "../components/Post.vue";
+import Publication from "../components/Publication.vue";
 
 export default {
   name: "Home",
   components: {
     Header,
-    Post,
+    Publication,
+    Posts,
   },
 };
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+$borderRadius: 0.5rem;
+
 h1 {
   margin-bottom: 1rem;
 }
@@ -32,5 +37,13 @@ a {
   &.router-link-exact-active {
     color: rgb(233, 67, 38);
   }
+}
+article {
+  width: 70%;
+  margin: auto;
+  margin-top: 2rem;
+  border-radius: $borderRadius;
+  background-color: rgb(255, 245, 245);
+  padding: 1rem;
 }
 </style>
