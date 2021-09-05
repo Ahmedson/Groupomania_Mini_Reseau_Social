@@ -35,15 +35,20 @@ export default {
   methods: {
     checkForm(e) {
       e.preventDefault();
+      let regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+
       if (this.email.length === 0) {
         this.errorMsg = "Veuillez saisir votre adresse mail";
         return;
+      } else if (regex.test(this.email)) {
+        if (this.password.length === 0) {
+          this.errorMsg = "Veuillez saisir votre mot de passe";
+          return;
+        }
+        this.loginEvent();
+      } else {
+        this.errorMsg = "Veuillez saisir une adresse mail valide";
       }
-      if (this.password.length === 0) {
-        this.errorMsg = "Veuillez saisir votre mot de passe";
-        return;
-      }
-      this.loginEvent();
     },
     async loginEvent() {
       const user = {

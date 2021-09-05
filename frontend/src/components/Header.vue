@@ -38,8 +38,12 @@ header {
 }
 
 @media (max-width: 550px) {
-  img {
-    height: 12rem;
+  header {
+    padding-left: 1rem;
+    padding-right: 0;
+    img {
+      height: 2.5rem;
+    }
   }
 }
 </style>

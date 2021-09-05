@@ -23,7 +23,7 @@
             class="editEmail--input"
             v-model="newEmail"
             type="text"
-            placeholder="groupomania@contact.fr"
+            :placeholder="theUser.email"
           /><br />
           <button @click="cancelEmailValidation" class="btn editEmail--btn" type="button">
             Annuler
@@ -126,8 +126,7 @@ export default {
             Authorization: "Bearer " + this.theUserIdToken,
           },
         })
-          .then((res) => {
-            console.log(res);
+          .then(() => {
             localStorage.removeItem("token");
             this.$router.push({ path: "/" });
           })
@@ -149,6 +148,9 @@ export default {
         return data.json();
       })
       .then((user) => {
+        if (user.error === true) {
+          this.$router.push({ path: "/" });
+        }
         this.theUser = user;
       })
       .catch((error) => console.log(error));

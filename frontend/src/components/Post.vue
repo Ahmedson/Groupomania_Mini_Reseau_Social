@@ -23,7 +23,7 @@
             >
               <div class="post post--deleteModify">
                 <small>
-                  <template v-if="comment.user_id === tokenUserId">
+                  <template v-if="comment.user_id === tokenUserId || tokenUserId === 6">
                     <span @click="editComment">Modifier</span> /
                     <span @click="deleteComment">Supprimer</span> -
                   </template>
@@ -70,11 +70,14 @@
         <div class="separateur"></div>
         <!-- Zone d'écriture des commentaires -->
         <form class="post">
-          <textarea placeholder="Écrivez votre commentaire..."></textarea>
+          <textarea wrap="hard" placeholder="Écrivez votre commentaire..."></textarea>
           <br />
           <button @click="submitComment" class="btn" type="submit">Commenter</button>
         </form>
-        <div v-if="post.user_id === tokenUserId" class="post post--deleteModify">
+        <div
+          v-if="post.user_id === tokenUserId || tokenUserId === 6"
+          class="post post--deleteModify"
+        >
           <small
             ><span @click="editPost">Modifier</span> /
             <span @click="deletePost">Supprimer</span>
@@ -135,6 +138,8 @@ export default {
     editPost(e) {
       let postId = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
       let post = e.currentTarget.parentNode.parentNode.parentNode.previousElementSibling;
+      let token = this.tokenToken;
+      let userId = this.tokenUserId;
       if (post.getAttribute("data-state")) return;
 
       let text = post.textContent || post.innerHTML;
@@ -160,11 +165,12 @@ export default {
       textarea.onblur = function () {
         this.parentNode.removeAttribute("data-state");
         this.parentNode.innerHTML = textarea.value;
-        fetch(`http://localhost:3000/post/modify/${postId}`, {
+        fetch(`http://localhost:3000/post/${userId}/modify/${postId}`, {
           method: "PUT",
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json; charset=UTF-8",
+            Authorization: "Bearer " + token,
           },
           body: JSON.stringify({ post: textarea.value }),
         })
@@ -179,8 +185,7 @@ export default {
     },
     deletePost(e) {
       let postId = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
-      console.log(postId);
-      fetch(`http://localhost:3000/post/delete/${postId}`, {
+      fetch(`http://localhost:3000/post/${this.tokenUserId}/delete/${postId}`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -198,7 +203,8 @@ export default {
     },
     deleteComment(e) {
       let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
-      fetch(`http://localhost:3000/comment/delete/${commentId}`, {
+      // let token = this.tokenToken;
+      fetch(`http://localhost:3000/comment/${this.tokenUserId}/delete/${commentId}/`, {
         method: "DELETE",
         headers: {
           Accept: "application/json",
@@ -219,6 +225,7 @@ export default {
       let comment =
         e.currentTarget.parentNode.parentNode.nextElementSibling.nextElementSibling;
       let token = this.tokenToken;
+      let userId = this.tokenUserId;
       if (comment.getAttribute("data-state")) return;
 
       let text = comment.textContent || comment.innerHTML;
@@ -244,7 +251,7 @@ export default {
         this.parentNode.removeAttribute("data-state");
         textarea.parentNode.parentNode.removeChild(btnValidModif);
         this.parentNode.innerHTML = textarea.value;
-        fetch(`http://localhost:3000/comment/modify/${commentId}`, {
+        fetch(`http://localhost:3000/comment/${userId}/modify/${commentId}/`, {
           method: "PUT",
           headers: {
             Accept: "application/json",
@@ -269,7 +276,7 @@ export default {
       let postId = e.currentTarget.parentNode.parentNode.parentNode.id;
       let element = e.currentTarget.previousElementSibling.previousElementSibling;
       if (commentValue.length > 0) {
-        fetch("http://localhost:3000/comment/create", {
+        fetch(`http://localhost:3000/comment/${this.tokenUserId}/create`, {
           method: "POST",
           headers: {
             Accept: "application/json",
@@ -313,12 +320,15 @@ export default {
         return data.json();
       })
       .then((posts) => {
+        if (posts.error === true) {
+          this.$router.push({ path: "/" });
+        }
         this.posts = posts.reverse();
       })
       .catch((error) => console.log(error));
 
     // Récupère tous les utilisateurs
-    await fetch("http://localhost:3000/auth/users", {
+    await fetch(`http://localhost:3000/auth/users`, {
       headers: { Authorization: "Bearer " + this.tokenToken },
     })
       .then((data) => {
@@ -376,11 +386,12 @@ article {
     }
     &--post {
       background-color: white;
-      text-align: left;
+      text-align: center;
       padding: 1rem;
       margin-bottom: 1rem;
       white-space: pre-wrap;
       border-radius: 0.5rem;
+      word-wrap: break-word;
     }
     &--comments {
       border-top: 1px solid rgb(233, 67, 38);

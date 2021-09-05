@@ -8,14 +8,16 @@ module.exports = (req, res, next) => {
     const decodedToken = jwt.verify(token, "token_key");
 
     const userId = decodedToken.userId;
-    // Si il y a un userId dans la reuqête et qu'il ne correspond pas à celui de notre token on renvoie une erreur
+    // Si il y a un userId dans la requête et qu'il ne correspond pas à celui de notre token on renvoie une erreur
     if (req.body.userId && req.body.userId !== userId){
       res.status(403).json({error : 'unauthorized request'})
+    } else if (req.params.userId && req.params.userId != userId){
+      res.status(403).json({error : 'unauthorized request'})
+    }else {
       // Sinon passer au middleware suivant
-    } else {
       next();
     }
   }catch{
-    res.status(401).json({error : new Error('Invalid request !')})
+    res.status(401).json({error : true})
   }
 }

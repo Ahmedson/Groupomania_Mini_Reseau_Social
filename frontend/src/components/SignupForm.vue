@@ -51,6 +51,7 @@ export default {
   methods: {
     checkForm(e) {
       e.preventDefault();
+      let regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
       if (this.firstName.length < 2) {
         this.errorMsg = "Votre prénom doit comporter au moins 2 caractères";
         return;
@@ -60,8 +61,13 @@ export default {
       } else if (this.email.length === 0) {
         this.errorMsg = "Veuillez saisir votre adresse mail";
         return;
-      } else if (this.password.length === 0) {
-        this.errorMsg = "Veuillez saisir votre mot de passe";
+      } else if (regex.test(this.email)) {
+        if (this.password.length === 0) {
+          this.errorMsg = "Veuillez saisir votre mot de passe";
+          return;
+        }
+      } else {
+        this.errorMsg = "Veuillez saisir une adresse mail valide";
         return;
       }
       this.signupEvent();
@@ -71,6 +77,7 @@ export default {
       let lastName = this.lastName;
       let email = this.email;
       let password = this.password;
+
       const user = {
         firstName,
         lastName,
@@ -86,16 +93,16 @@ export default {
         body: JSON.stringify(user),
       })
         .then(function (res) {
-          if (res.ok) {
-            return res.json();
-          }
+          return res.json();
         })
         .catch(function (error) {
           console.log(error);
         });
-
       if (response.emailAlreadyUsed) {
         this.errorMsg = "Adresse mail déjà utilisée";
+      } else if (response.error === "unauthorized request") {
+        this.errorMsg =
+          "Mot de passe requis : au moins 8 caractères dont une majuscule, une minuscule, un chiffre et un caractère spéciale";
       } else {
         localStorage.setItem("token", JSON.stringify(response));
         this.$router.push({ path: "/home" });

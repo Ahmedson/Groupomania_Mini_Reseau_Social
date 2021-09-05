@@ -22,7 +22,7 @@ exports.getAllCommentOnOnePost = (req, res, next) => {
 }
 
 exports.getOneComment = (req, res, next) => {
-  Comment.findOne({ where: { comment_id: req.params.id } })
+  Comment.findOne({ where: { comment_id: req.params.commentId } })
     .then(comment => res.status(200).json(comment))
     .catch(error => res.status(400).json(error))
 }
@@ -30,7 +30,7 @@ exports.getOneComment = (req, res, next) => {
 exports.modifyComment = (req, res, next) => {
   Comment.update({ comment: req.body.comment }, {
     where: {
-      comment_id: req.params.id
+      comment_id: req.params.commentId
     }
   })
     .then(() => res.status(200).json({ message: "Commentaire modifié" }))
@@ -40,7 +40,7 @@ exports.modifyComment = (req, res, next) => {
 exports.deleteComment = (req, res, next) => {
   Comment.destroy({
     where: {
-      comment_id: req.params.id
+      comment_id: req.params.commentId
     }
   })
     .then(() => res.status(200).json("Commentaire supprimé !"))

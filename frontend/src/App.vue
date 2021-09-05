@@ -61,6 +61,9 @@ body,
       align-items: center;
     }
   }
+  p {
+    width: 20rem;
+  }
 }
 .warning {
   color: red;

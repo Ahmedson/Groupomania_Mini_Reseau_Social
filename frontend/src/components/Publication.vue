@@ -44,7 +44,7 @@ export default {
           let token = JSON.parse(localStorage.getItem("token"));
           let tokenToken = token.token;
           let tokenUserId = token.userId;
-          fetch("http://localhost:3000/post/", {
+          fetch(`http://localhost:3000/post/${tokenUserId}/`, {
             method: "POST",
             headers: {
               Accept: "application/json",
@@ -64,7 +64,7 @@ export default {
               }
             })
             .catch((error) => console.log(error));
-          location.reload();
+          // location.reload();
         }
       }, 200);
     },

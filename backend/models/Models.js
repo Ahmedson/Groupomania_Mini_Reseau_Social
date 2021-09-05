@@ -59,11 +59,14 @@ const User = sequelize.define('user', {
   email: {
     type: DataTypes.STRING,
     allowNull: false,
-    unique: true
+    unique: true,
+    validate: {
+      isEmail: true
+    }
   },
   password: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
   },
   isAdmin: {
     type: DataTypes.BOOLEAN,

@@ -6,11 +6,13 @@
     <router-link to="/home/multimedia">Multimédia</router-link>
     <Publication />
     <Posts />
+    <Footer />
   </div>
 </template>
 
 <script>
 import Header from "../components/Header.vue";
+import Footer from "../components/Footer.vue";
 import Posts from "../components/Post.vue";
 import Publication from "../components/Publication.vue";
 
@@ -20,6 +22,7 @@ export default {
     Header,
     Publication,
     Posts,
+    Footer,
   },
 };
 </script>

@@ -18,7 +18,7 @@ exports.getAllPost = (req, res, next) => {
 }
 
 exports.getOnePost = (req, res, next) => {
-  Post.findOne({ where: { post_id: req.params.id } })
+  Post.findOne({ where: { post_id: req.params.postId } })
     .then(post => res.status(200).json(post))
     .catch(error => res.status(400).json(error))
 }
@@ -26,7 +26,7 @@ exports.getOnePost = (req, res, next) => {
 exports.modifyPost = (req, res, next) => {
   Post.update({ ...req.body }, {
     where: {
-      post_id: req.params.id
+      post_id: req.params.postId
     }
   })
     .then(() => res.status(200).json({ message: "Post modifié !" }))
@@ -36,7 +36,7 @@ exports.modifyPost = (req, res, next) => {
 exports.deletePost = (req, res, next) => {
   Post.destroy({
     where: {
-      post_id: req.params.id
+      post_id: req.params.postId
     }
   })
     .then(() => res.status(200).json("Post supprimé !"))
