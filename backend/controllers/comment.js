@@ -14,7 +14,7 @@ exports.createComment = (req, res, next) => {
 exports.getAllCommentOnOnePost = (req, res, next) => {
   Comment.findAll({
     where: {
-      post_id: req.body.post_id
+      post_id: req.params.postId
     }
   })
     .then(posts => res.status(200).json(posts))

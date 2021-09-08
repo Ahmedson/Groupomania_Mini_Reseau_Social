@@ -23,7 +23,7 @@
             >
               <div class="post post--deleteModify">
                 <small>
-                  <template v-if="comment.user_id === tokenUserId || tokenUserId === 6">
+                  <template v-if="comment.user_id === tokenUserId || tokenUserId === 1">
                     <span @click="editComment">Modifier</span> /
                     <span @click="deleteComment">Supprimer</span> -
                   </template>
@@ -70,12 +70,12 @@
         <div class="separateur"></div>
         <!-- Zone d'écriture des commentaires -->
         <form class="post">
-          <textarea wrap="hard" placeholder="Écrivez votre commentaire..."></textarea>
+          <textarea placeholder="Écrivez votre commentaire..."></textarea>
           <br />
           <button @click="submitComment" class="btn" type="submit">Commenter</button>
         </form>
         <div
-          v-if="post.user_id === tokenUserId || tokenUserId === 6"
+          v-if="post.user_id === tokenUserId || tokenUserId === 1"
           class="post post--deleteModify"
         >
           <small
@@ -290,6 +290,7 @@ export default {
           }),
         })
           .then((res) => {
+            location.reload();
             return res.json();
           })
           .then(async (response) => {
@@ -340,14 +341,10 @@ export default {
       .catch((error) => console.log(error));
 
     for (let i = 0; i < this.posts.length; i++) {
-      await fetch("http://localhost:3000/comment", {
-        method: "POST",
+      await fetch(`http://localhost:3000/comment/${this.posts[i].post_id}/`, {
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json; charset=UTF-8",
           Authorization: "Bearer " + this.tokenToken,
         },
-        body: JSON.stringify({ post_id: this.posts[i].post_id }),
       })
         .then((res) => {
           if (res.ok) return res.json();

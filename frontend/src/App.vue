@@ -37,7 +37,7 @@ body,
 
 // Style des formulaires LoginForm.vue & SignupForm.vue
 .form {
-  // background-color: #42b983;
+  background-color: rgb(255, 245, 245);
   border: 2px solid rgb(233, 67, 38);
   padding: 3rem 7rem;
   border-radius: 0.5rem;
@@ -57,8 +57,11 @@ body,
       width: 100vw;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: center;
+      img {
+        margin: 2rem 0;
+      }
     }
   }
   p {
@@ -68,5 +71,37 @@ body,
 .warning {
   color: red;
   margin-bottom: 0.7rem;
+}
+
+@media (max-width: 550px) {
+  // Style des formulaires LoginForm.vue & SignupForm.vue
+  .form {
+    margin: 0.5rem;
+    padding: 4rem;
+    &--input {
+      margin-bottom: 1rem;
+      width: 100%;
+      outline-color: rgb(233, 67, 38);
+    }
+    &--div {
+      display: flex;
+      justify-content: space-between;
+      a {
+        margin-right: 1rem;
+      }
+      &__bg {
+        // div qui prend tout le viewport et qui contient les formulaires
+        width: 100%;
+        height: 100vh;
+        display: flex;
+        img {
+          margin: 2rem 0;
+        }
+      }
+    }
+    p {
+      width: 100%;
+    }
+  }
 }
 </style>

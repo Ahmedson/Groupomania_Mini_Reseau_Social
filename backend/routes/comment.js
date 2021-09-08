@@ -12,7 +12,7 @@ const auth = require('../middleware/auth');
 
 // application des fonctions du contrôleur à chaque route 
 // [attention à ne pas appeler les fonctions]
-router.post('/', auth, commentCtrl.getAllCommentOnOnePost);
+router.get('/:postId', auth, commentCtrl.getAllCommentOnOnePost);
 router.get('/:commentId', auth, commentCtrl.getOneComment);
 router.post('/:userId/create', auth, commentCtrl.createComment);
 router.put('/:userId/modify/:commentId', auth, commentCtrl.modifyComment);

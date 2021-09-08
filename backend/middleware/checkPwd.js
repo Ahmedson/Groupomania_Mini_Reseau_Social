@@ -7,7 +7,6 @@ module.exports = (req, res, next) => {
     } else {
       res.status(403).json({error : 'unauthorized request',
                             message: 'Mot de passe requis : minimum 8 caractères, dont une majuscule, une minuscule, un chiffre et un caractère spéciale'})
-      // Sinon passer au middleware suivant
     }
   }catch{
     res.status(401).json({error : new Error('Invalid request !')})

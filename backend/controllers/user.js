@@ -15,13 +15,32 @@ const { User } = require('../models/Models');
 
 exports.getOneUser = (req, res, next) => {
   User.findOne({ where: { user_id: req.params.id } })
-    .then(user => res.status(200).json(user))
+    .then(user => {
+        oneUser = {
+          "user_id" : user.user_id,
+          "firstName" : user.firstName,
+          "lastName" : user.lastName,
+          "email" : user.email,
+          "createdAt" : user.createdAt
+        }
+      res.status(200).json(oneUser)
+    })
     .catch(error => res.status(400).json(error))
 }
 
 exports.getAllUser = (req, res, next) => {
   User.findAll()
-    .then(users => res.status(200).json(users))
+    .then(users => {
+      let allUsers = [];
+      for(let user of users) {
+        let theUser = {
+          "user_id" : user.user_id,
+          "firstName" : user.firstName
+        }
+        allUsers.push(theUser)
+      }
+      res.status(200).json(allUsers)
+    })
     .catch(error => res.status(400).json(error))
 }
 
