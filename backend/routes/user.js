@@ -10,10 +10,12 @@ const router = express.Router();
 const userCtrl = require('../controllers/user');
 const auth = require('../middleware/auth');
 const checkPwd = require('../middleware/checkPwd');
+const redirection = require('../middleware/redirection');
 // const checkPassword = require("../middleware/check-password");
 
 // application des fonctions du contrôleur à chaque route 
 // [attention à ne pas appeler les fonctions]
+router.get('/redirection', redirection);
 router.post('/signup', checkPwd, userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.get('/users', auth, userCtrl.getAllUser);

@@ -9,7 +9,7 @@ const routes = [
     path: '/',
     name: 'Login',
     component: Login,
-    meta : { hasGotToken : true}
+    meta : { dontNeedToken : true}
   },
   {
     path: '/home',
@@ -36,27 +36,35 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/Signup.vue'),
-    meta : { hasGotToken : true}
+    meta : { dontNeedToken : true}
   }
 ]
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(),
   routes
 })
 
 // Mise en place de la vérification pour chaque route
-router.beforeEach(to => {
-  if (to.meta.needToken && !localStorage.getItem('token')) {
-    return '/'
-  }
+router.beforeEach(async (to, from) => {
+    if(( to.meta.dontNeedToken || from.meta.dontNeedToken  )&& localStorage.getItem('token')){
+      let token = JSON.parse(localStorage.getItem('token')).token;
+      const response = await fetch('http://localhost:3000/auth/redirection', {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((res) => {return res})
+      .catch((error) => console.log(error));
+
+      if (response.ok){
+        return '/home'
+      } else if(!response.ok) {
+        localStorage.removeItem('token');
+      }
+    }
+    if (to.meta.needToken && !localStorage.getItem('token')) {
+      return '/'
+    }
+  
 })
-
-// router.beforeEach((to) => {
-//   if (to.meta.hasGotToken && localStorage.getItem('token')) {
-//     return '/home'
-//   }
-// })
-
 
 export default router

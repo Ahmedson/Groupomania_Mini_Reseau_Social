@@ -24,8 +24,8 @@
               <div class="post post--deleteModify">
                 <small>
                   <template v-if="comment.user_id === tokenUserId || tokenUserId === 1">
-                    <span @click="editComment">Modifier</span> /
-                    <span @click="deleteComment">Supprimer</span> -
+                    <span @click="editPostOrComment('comment')">Modifier</span> /
+                    <span @click="deletePostOrComment('comment')">Supprimer</span> -
                   </template>
                   <span v-if="comment.createdAt === comment.updatedAt" class="date-heure">
                     Le : {{ timestampToDateAndHours(comment.createdAt) }}</span
@@ -40,33 +40,6 @@
             </div>
           </div>
         </div>
-        <!-- Affichage du dernier commentaire -->
-        <div v-for="lastComment in arrayLastComments" :key="lastComment.comment_id">
-          <div
-            class="post post--comments"
-            v-if="lastComment && post.post_id === lastComment.post_id"
-          >
-            <div class="post post--deleteModify">
-              <small>
-                <template v-if="lastComment.user_id === tokenUserId">
-                  <span @click="editComment">Modifier</span> /
-                  <span @click="deleteComment">Supprimer</span> -
-                </template>
-                <span
-                  v-if="lastComment.createdAt === lastComment.updatedAt"
-                  class="date-heure"
-                >
-                  Le : {{ timestampToDateAndHours(lastComment.createdAt) }}</span
-                >
-                <span v-else class="date-heure"
-                  >Modifié le : {{ timestampToDateAndHours(lastComment.updatedAt) }}</span
-                >
-              </small>
-            </div>
-            <p>{{ userName(lastComment.user_id) }} :</p>
-            <p>- {{ lastComment.comment }}</p>
-          </div>
-        </div>
         <div class="separateur"></div>
         <!-- Zone d'écriture des commentaires -->
         <form class="post">
@@ -79,8 +52,8 @@
           class="post post--deleteModify"
         >
           <small
-            ><span @click="editPost">Modifier</span> /
-            <span @click="deletePost">Supprimer</span>
+            ><span @click="editPostOrComment('post')">Modifier</span> /
+            <span @click="deletePostOrComment('post')">Supprimer</span>
           </small>
         </div>
       </div>
@@ -89,18 +62,17 @@
 </template>
 
 <script>
+import { mapState } from "vuex";
 export default {
   name: "Post",
   data() {
     return {
-      posts: null,
-      users: null,
-      tokenToken: null,
-      tokenUserId: null,
       arrayCommentObject: [],
       comments: "",
-      arrayLastComments: [],
     };
+  },
+  computed: {
+    ...mapState(["posts", "users", "tokenToken", "tokenUserId"]),
   },
   watch: {
     comments(newValue) {
@@ -109,8 +81,8 @@ export default {
   },
   methods: {
     userName(userId) {
-      if (this.users !== null) {
-        for (let user of this.users) {
+      if (this.$store.state.users !== null) {
+        for (let user of this.$store.state.users) {
           if (user.user_id === userId) {
             return user.firstName;
           }
@@ -135,217 +107,32 @@ export default {
       )}`;
       return fullDate;
     },
-    editPost(e) {
-      let postId = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
-      let post = e.currentTarget.parentNode.parentNode.parentNode.previousElementSibling;
-      let token = this.tokenToken;
-      let userId = this.tokenUserId;
-      if (post.getAttribute("data-state")) return;
-
-      let text = post.textContent || post.innerHTML;
-      let textarea = document.createElement("textarea");
-      let btnValidModif = document.createElement("button");
-
-      btnValidModif.textContent = "Valider les modifications";
-      btnValidModif.classList.add("btn");
-
-      textarea.style.border = 0;
-      textarea.style.outline = "none";
-      textarea.style.height = "200px";
-      textarea.style.width = "100%";
-      textarea.value = text;
-
-      post.innerHTML = "";
-      post.appendChild(textarea);
-      post.setAttribute("data-state", "edit");
-
-      textarea.focus();
-      textarea.parentNode.insertBefore(btnValidModif, textarea.nextElementSibling);
-
-      textarea.onblur = function () {
-        this.parentNode.removeAttribute("data-state");
-        this.parentNode.innerHTML = textarea.value;
-        fetch(`http://localhost:3000/post/${userId}/modify/${postId}`, {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json; charset=UTF-8",
-            Authorization: "Bearer " + token,
-          },
-          body: JSON.stringify({ post: textarea.value }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              location.reload();
-              return res.json();
-            }
-          })
-          .catch((error) => console.log(error));
-      };
+    deletePostOrComment(postOrComment) {
+      this.$store.dispatch("deletePostOrCommentStore", postOrComment);
     },
-    deletePost(e) {
-      let postId = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
-      fetch(`http://localhost:3000/post/${this.tokenUserId}/delete/${postId}`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json; charset=UTF-8",
-          Authorization: "Bearer " + this.tokenToken,
-        },
-      })
-        .then((res) => {
-          if (res.ok) {
-            location.reload();
-            return res.json();
-          }
-        })
-        .catch((error) => console.log(error));
+    editPostOrComment(postOrComment) {
+      this.$store.dispatch("editPostOrCommentStore", postOrComment);
     },
-    deleteComment(e) {
-      let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
-      // let token = this.tokenToken;
-      fetch(`http://localhost:3000/comment/${this.tokenUserId}/delete/${commentId}/`, {
-        method: "DELETE",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json; charset=UTF-8",
-          Authorization: "Bearer " + this.tokenToken,
-        },
-      })
-        .then((res) => {
-          if (res.ok) {
-            location.reload();
-            return res.json();
-          }
-        })
-        .catch((error) => console.log(error));
-    },
-    editComment(e) {
-      let commentId = e.currentTarget.parentNode.parentNode.parentNode.id;
-      let comment =
-        e.currentTarget.parentNode.parentNode.nextElementSibling.nextElementSibling;
-      let token = this.tokenToken;
-      let userId = this.tokenUserId;
-      if (comment.getAttribute("data-state")) return;
-
-      let text = comment.textContent || comment.innerHTML;
-      let textarea = document.createElement("textarea");
-      let btnValidModif = document.createElement("button");
-
-      btnValidModif.textContent = "Valider les modifications";
-      btnValidModif.classList.add("btn");
-
-      textarea.style.border = 0;
-      textarea.style.outline = "none";
-      textarea.style.height = "100px";
-      textarea.style.width = "100%";
-      textarea.value = text;
-
-      comment.innerHTML = "";
-      comment.appendChild(textarea);
-      comment.setAttribute("data-state", "edit");
-
-      textarea.focus();
-      textarea.parentNode.parentNode.appendChild(btnValidModif);
-      textarea.onblur = function () {
-        this.parentNode.removeAttribute("data-state");
-        textarea.parentNode.parentNode.removeChild(btnValidModif);
-        this.parentNode.innerHTML = textarea.value;
-        fetch(`http://localhost:3000/comment/${userId}/modify/${commentId}/`, {
-          method: "PUT",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json; charset=UTF-8",
-            Authorization: "Bearer " + token,
-          },
-          body: JSON.stringify({ comment: textarea.value }),
-        })
-          .then((res) => {
-            if (res.ok) {
-              location.reload();
-              return res.json();
-            }
-          })
-          .catch((error) => console.log(error));
-      };
-    },
-    submitComment(e) {
-      e.preventDefault();
-      let commentValue =
-        e.currentTarget.previousElementSibling.previousElementSibling.value;
-      let postId = e.currentTarget.parentNode.parentNode.parentNode.id;
-      let element = e.currentTarget.previousElementSibling.previousElementSibling;
-      if (commentValue.length > 0) {
-        fetch(`http://localhost:3000/comment/${this.tokenUserId}/create`, {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json; charset=UTF-8",
-            Authorization: "Bearer " + this.tokenToken,
-          },
-          body: JSON.stringify({
-            comment: commentValue,
-            post_id: postId,
-            user_id: this.tokenUserId,
-          }),
-        })
-          .then((res) => {
-            location.reload();
-            return res.json();
-          })
-          .then(async (response) => {
-            await fetch(`http://localhost:3000/comment/${response.comment_id}`, {
-              headers: { Authorization: "Bearer " + this.tokenToken },
-            })
-              .then(async (res) => {
-                return await res.json();
-              })
-              .then(async (lastComment) => {
-                await this.arrayLastComments.push(lastComment);
-                element.value = "";
-              });
-          })
-          .catch((error) => console.log(error));
-      }
+    submitComment(event) {
+      event.preventDefault();
+      this.$store.dispatch("submitCommentStore", event);
     },
   },
   async mounted() {
-    let token = JSON.parse(localStorage.getItem("token"));
-    this.tokenToken = token.token;
-    this.tokenUserId = token.userId;
-    // Récupère tous les posts
-    await fetch("http://localhost:3000/post", {
-      headers: { Authorization: "Bearer " + this.tokenToken },
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((posts) => {
-        if (posts.error === true) {
-          this.$router.push({ path: "/" });
+    await this.$store.dispatch("getToken");
+    await this.$store.dispatch("getPosts");
+    await this.$store.dispatch("getUsers");
+
+    // RÉCUPÈRATION DES COMMENTAIRES DE CHAQUE ARTICLES
+    for (let i = 0; i < this.$store.state.posts.length; i++) {
+      await fetch(
+        `http://localhost:3000/comment/${this.$store.state.posts[i].post_id}/`,
+        {
+          headers: {
+            Authorization: "Bearer " + this.$store.state.tokenToken,
+          },
         }
-        this.posts = posts.reverse();
-      })
-      .catch((error) => console.log(error));
-
-    // Récupère tous les utilisateurs
-    await fetch(`http://localhost:3000/auth/users`, {
-      headers: { Authorization: "Bearer " + this.tokenToken },
-    })
-      .then((data) => {
-        return data.json();
-      })
-      .then((users) => {
-        this.users = users;
-      })
-      .catch((error) => console.log(error));
-
-    for (let i = 0; i < this.posts.length; i++) {
-      await fetch(`http://localhost:3000/comment/${this.posts[i].post_id}/`, {
-        headers: {
-          Authorization: "Bearer " + this.tokenToken,
-        },
-      })
+      )
         .then((res) => {
           if (res.ok) return res.json();
         })
