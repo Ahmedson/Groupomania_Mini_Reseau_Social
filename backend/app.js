@@ -2,8 +2,11 @@ const express = require('express');
 
 const { sequelize } = require('./models/Models')
 
+const path = require('path');
 const postRoutes = require('./routes/post');
+const postImgRoutes = require('./routes/postImg');
 const commentRoutes = require('./routes/comment');
+const commentImgRoutes = require('./routes/commentImg');
 const userRoutes = require('./routes/user');
 
 sequelize.authenticate()
@@ -28,10 +31,15 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 
+app.use('/images', express.static(path.join(__dirname, 'images')));
 // Enregistrement du routeur pour les posts sur le chemin /comment
 app.use('/comment', commentRoutes);
+// Enregistrement du routeur pour les posts sur le chemin /comment
+app.use('/commentImg', commentImgRoutes);
 // Enregistrement du routeur pour les posts sur le chemin /post
 app.use('/post', postRoutes);
+// Enregistrement du routeur pour les posts multimédia sur le chemin /postImg
+app.use('/postImg', postImgRoutes);
 // Enregistrement du routeur pour les utilisateurs sur le chemin /auth
 app.use('/auth', userRoutes);
 

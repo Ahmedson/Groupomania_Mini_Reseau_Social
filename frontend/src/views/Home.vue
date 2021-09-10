@@ -42,6 +42,7 @@ a {
   }
 }
 article {
+  box-shadow: 0rem 0rem 0.3rem rgba(233, 67, 38, 1);
   width: 70%;
   margin: auto;
   margin-top: 2rem;

@@ -24,10 +24,44 @@ const Post = sequelize.define('post', {
   }
   });
 
+  /**
+ * POST MULTIMEDIA
+ */
+const PostImg = sequelize.define('postImg', {
+  postImg_id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  title: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: false
+  }
+  });
+
 /**
  * COMMENT
  */
 const Comment = sequelize.define('comment', {
+  comment_id: {
+    type: DataTypes.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  comment: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  }
+})
+
+/**
+ * COMMENT MULTIMEDIA
+ */
+ const CommentImg = sequelize.define('commentImg', {
   comment_id: {
     type: DataTypes.INTEGER,
     primaryKey: true,
@@ -84,12 +118,32 @@ Post.belongsTo(User, {
   constraints: false,
   onDelete: 'cascade'
 })
+User.hasMany(PostImg, {
+  foreignKey: "user_id",
+  constraints: false,
+  onDelete: 'cascade'
+});
+PostImg.belongsTo(User, {
+  foreignKey: "user_id",
+  constraints: false,
+  onDelete: 'cascade'
+})
 User.hasMany(Comment, {
   foreignKey: "user_id",
   constraints: false,
   onDelete: 'cascade'
 });
 Comment.belongsTo(User, {
+  foreignKey: "user_id",
+  constraints: false,
+  onDelete: 'cascade'
+})
+User.hasMany(CommentImg, {
+  foreignKey: "user_id",
+  constraints: false,
+  onDelete: 'cascade'
+});
+CommentImg.belongsTo(User, {
   foreignKey: "user_id",
   constraints: false,
   onDelete: 'cascade'
@@ -104,8 +158,18 @@ Comment.belongsTo(Post, {
   constraints: false,
   onDelete: 'cascade'
 })
+PostImg.hasMany(CommentImg, {
+  foreignKey: "postImg_id",
+  constraints: false,
+  onDelete: 'cascade'
+});
+CommentImg.belongsTo(PostImg, {
+  foreignKey: "postImg_id",
+  constraints: false,
+  onDelete: 'cascade'
+})
 
-// sequelize.sync({ force: true})
+// sequelize.sync({ alter: true})
 //   .then((data) => {
 //     console.log('Table and model synced successfully')
 //   })
@@ -116,6 +180,8 @@ Comment.belongsTo(Post, {
 module.exports = {
   User,
   Post,
+  PostImg,
   Comment,
+  CommentImg,
   sequelize
 };

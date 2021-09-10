@@ -46,21 +46,21 @@ const router = createRouter({
 })
 
 // Mise en place de la vérification pour chaque route
-router.beforeEach(async (to, from) => {
-    if(( to.meta.dontNeedToken || from.meta.dontNeedToken  )&& localStorage.getItem('token')){
-      let token = JSON.parse(localStorage.getItem('token')).token;
-      const response = await fetch('http://localhost:3000/auth/redirection', {
-        headers: { Authorization: "Bearer " + token },
-      })
-      .then((res) => {return res})
-      .catch((error) => console.log(error));
+router.beforeEach(async (to) => {
+    // if(( to.meta.dontNeedToken || from.meta.dontNeedToken  )&& localStorage.getItem('token')){
+    //   let token = JSON.parse(localStorage.getItem('token')).token;
+    //   const response = await fetch('http://localhost:3000/auth/redirection', {
+    //     headers: { Authorization: "Bearer " + token },
+    //   })
+    //   .then((res) => {return res})
+    //   .catch((error) => console.log(error));
 
-      if (response.ok){
-        return '/home'
-      } else if(!response.ok) {
-        localStorage.removeItem('token');
-      }
-    }
+    //   if (response.ok){
+    //     return '/home'
+    //   } else if(!response.ok) {
+    //     localStorage.removeItem('token');
+    //   }
+    // }
     if (to.meta.needToken && !localStorage.getItem('token')) {
       return '/'
     }
