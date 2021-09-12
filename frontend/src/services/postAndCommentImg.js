@@ -29,8 +29,6 @@ export default {
   editPost({state}, event){
     let id = event.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
     let div = event.currentTarget.parentNode.parentNode.parentNode.previousElementSibling;
-    let fetchURL = `http://localhost:3000/postImg/${state.tokenUserId}/modify/${id}/`;
-    console.log(fetchURL)
 
     if (div.getAttribute("data-state")) return;
 
@@ -61,7 +59,7 @@ export default {
 
       const formData = new FormData();
       formData.append("image", selectedFile);
-
+      console.log(formData)
       this.parentNode.removeAttribute("data-state");
 
       fetch(`http://localhost:3000/postImg/${state.tokenUserId}/modify/${id}/`, {

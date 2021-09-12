@@ -9,6 +9,7 @@ const router = express.Router();
 // Importation du contrôleur pour les users
 const userCtrl = require('../controllers/user');
 const auth = require('../middleware/auth');
+const multer = require('../middleware/multer');
 const checkPwd = require('../middleware/checkPwd');
 const redirection = require('../middleware/redirection');
 // const checkPassword = require("../middleware/check-password");
@@ -19,7 +20,7 @@ router.get('/redirection', redirection);
 router.post('/signup', checkPwd, userCtrl.signup);
 router.post('/login', userCtrl.login);
 router.get('/users', auth, userCtrl.getAllUser);
-router.get('/user/redirection', auth);
+router.put('/:id/update/picture',auth,  multer, userCtrl.modifyPicture);
 router.get('/user/:id', auth,  userCtrl.getOneUser);
 router.put('/user/:id', auth,  userCtrl.modifyEmail);
 router.delete('/user/:id', auth,  userCtrl.deleteUser);

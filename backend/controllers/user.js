@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 // JWT sont des jetons générés par un serveur lors de 
 // l'authentification d'un utilisateur sur une application Web
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const { User } = require('../models/Models');
 
@@ -21,7 +22,8 @@ exports.getOneUser = (req, res, next) => {
           "firstName" : user.firstName,
           "lastName" : user.lastName,
           "email" : user.email,
-          "createdAt" : user.createdAt
+          "createdAt" : user.createdAt,
+          "picture" : user.picture
         }
       res.status(200).json(oneUser)
     })
@@ -35,7 +37,8 @@ exports.getAllUser = (req, res, next) => {
       for(let user of users) {
         let theUser = {
           "user_id" : user.user_id,
-          "firstName" : user.firstName
+          "firstName" : user.firstName,
+          "picture" : user.picture
         }
         allUsers.push(theUser)
       }
@@ -51,6 +54,24 @@ exports.modifyEmail = (req, res, next) => {
     }
   })
     .then(() => res.status(200).json({ message: "Email modifié" }))
+    .catch(error => res.status(400).json(error))
+}
+
+exports.modifyPicture = (req, res, next) => {
+  User.findOne({ where: { user_id: req.params.id } })
+    .then( user => {
+      const filename = user.picture.split('/images')[1];
+
+      fs.unlink(`images/${filename}`, () => {
+        User.update({ picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` }, {
+          where: {
+            user_id: req.params.id
+          }
+        })
+        .then(() => res.status(200).json({ message: "Photo de profil modifié" }))
+        .catch(error => res.status(400).json(error))
+      })
+    })
     .catch(error => res.status(400).json(error))
 }
 
@@ -91,7 +112,7 @@ exports.signup = (req, res, next) => {
                 token: jwt.sign(
                   {userId : user.user_id},
                   "token_key",
-                  {expiresIn : '8h'})
+                  {expiresIn : '1h'})
                 })
             })
             .catch(error => res.status(400).json(error))

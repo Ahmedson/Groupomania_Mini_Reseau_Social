@@ -102,6 +102,10 @@ const User = sequelize.define('user', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  picture: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
   isAdmin: {
     type: DataTypes.BOOLEAN,
     defaultValue: false
