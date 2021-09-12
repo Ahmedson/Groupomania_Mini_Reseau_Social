@@ -173,7 +173,7 @@ CommentImg.belongsTo(PostImg, {
   onDelete: 'cascade'
 })
 
-// sequelize.sync({ alter: true})
+// sequelize.sync({ force: true})
 //   .then((data) => {
 //     console.log('Table and model synced successfully')
 //   })
