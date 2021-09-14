@@ -82,9 +82,3 @@ http://localhost/8080
 - Aucun compte existant
 - Le premier compte crée est le seul qui possédera les droits administrateur
 - Découvrez l'application de manière intuitive
-- 
-<<<<<<< HEAD
-***
-=======
-***
->>>>>>> main
