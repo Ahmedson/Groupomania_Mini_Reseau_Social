@@ -27,7 +27,7 @@
         <p>Nom : {{ theUser.lastName }}</p>
         <p>Prénom : {{ theUser.firstName }}</p>
         <p>Adresse email : {{ theUser.email }}</p>
-        <p class="editEmail--p" v-show="mailIsEditing">
+        <p class="editEmail--p" v-if="mailIsEditing">
           Nouvelle adresse Email :<br />
           <input
             class="editEmail--input"
@@ -112,25 +112,31 @@ export default {
       });
 
       btnValidModif.onclick = function () {
-        const formData = new FormData();
-        formData.append("image", selectedFile);
+        if (selectedFile === undefined) {
+          div.removeChild(input);
+          div.removeChild(btnValidModif);
+          location.reload();
+        } else {
+          const formData = new FormData();
+          formData.append("image", selectedFile);
 
-        this.parentNode.removeAttribute("data-state");
+          this.parentNode.removeAttribute("data-state");
 
-        fetch(fetchURL, {
-          method: "PUT",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-          body: formData,
-        })
-          .then((res) => {
-            if (res.ok) {
-              location.reload();
-              return res.json();
-            }
+          fetch(fetchURL, {
+            method: "PUT",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+            body: formData,
           })
-          .catch((error) => console.log(error));
+            .then((res) => {
+              if (res.ok) {
+                location.reload();
+                return res.json();
+              }
+            })
+            .catch((error) => console.log(error));
+        }
       };
     },
     addZero(value) {

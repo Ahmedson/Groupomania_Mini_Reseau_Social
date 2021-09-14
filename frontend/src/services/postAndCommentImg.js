@@ -26,7 +26,7 @@ export default {
           .catch((error) => console.log(error));
       }
   },
-  editPost({state}, event){
+  editPost({state} ,event){
     let id = event.currentTarget.parentNode.parentNode.parentNode.parentNode.id;
     let div = event.currentTarget.parentNode.parentNode.parentNode.previousElementSibling;
 
@@ -57,9 +57,14 @@ export default {
 
     btnValidModif.onclick = function () {
 
+      if ( selectedFile === undefined){
+        div.removeChild(input);
+        div.removeChild(btnValidModif);
+        location.reload();
+      } else {
       const formData = new FormData();
       formData.append("image", selectedFile);
-      console.log(formData)
+
       this.parentNode.removeAttribute("data-state");
 
       fetch(`http://localhost:3000/postImg/${state.tokenUserId}/modify/${id}/`, {
@@ -76,6 +81,7 @@ export default {
         }
       })
       .catch((error) => console.log(error));
+      }
     };
   },
   editComment({state}, event) {

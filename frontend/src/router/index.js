@@ -59,6 +59,7 @@ router.beforeEach(async (to) => {
     //     return '/home'
     //   } else if(!response.ok) {
     //     localStorage.removeItem('token');
+    //     return '/'
     //   }
     // }
     if (to.meta.needToken && !localStorage.getItem('token')) {
