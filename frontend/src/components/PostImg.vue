@@ -3,7 +3,15 @@
     <article :id="post.postImg_id" v-for="post in postsImg" :key="post.postImg_id">
       <div class="post--header">
         <small class="info">
-          <h3>Publié par : {{ userName(post.user_id) }}</h3>
+          <h3>
+            <img
+              v-if="userPicture(post.user_id)"
+              :src="userPicture(post.user_id)"
+              alt=""
+            />
+            <img v-else src="../assets/profil.png" alt="miniature photo de profil" />
+            Publié par : {{ userName(post.user_id) }}
+          </h3>
           <p v-if="post.createdAt === post.updatedAt">
             Le : {{ timestampToDateAndHours(post.createdAt) }}
           </p>
@@ -37,7 +45,17 @@
                   >
                 </small>
               </div>
-              <p>{{ userName(comment.user_id) }} :</p>
+              <p>
+                <img
+                  v-if="userPicture(comment.user_id)"
+                  :src="userPicture(comment.user_id)"
+                  alt=""
+                />
+                <img v-else src="../assets/profil.png" alt="" />{{
+                  userName(comment.user_id)
+                }}
+                :
+              </p>
               <p>- {{ comment.comment }}</p>
             </div>
           </div>
@@ -82,6 +100,15 @@ export default {
     },
   },
   methods: {
+    userPicture(userId) {
+      if (this.$store.state.users !== null) {
+        for (let user of this.$store.state.users) {
+          if (user.user_id === userId) {
+            return user.picture;
+          }
+        }
+      }
+    },
     userName(userId) {
       if (this.$store.state.users !== null) {
         for (let user of this.$store.state.users) {
@@ -166,6 +193,11 @@ article {
     margin-top: 0.5rem;
     &--header {
       @include border-bottom;
+      img {
+        border-radius: 50%;
+        max-height: 2rem;
+        max-width: 2rem;
+      }
     }
     &--title {
       @include border-bottom;
@@ -199,6 +231,11 @@ article {
       }
       p:nth-child(2) {
         font-weight: bold;
+      }
+      img {
+        border-radius: 50%;
+        max-height: 2rem;
+        max-width: 2rem;
       }
     }
     &--deleteModify {
