@@ -2,6 +2,10 @@ const express = require('express');
 
 const { sequelize } = require('./models/Models')
 
+// Helmet aide à protéger l'application de certaines des vulnérabilités 
+// du Web en configurant de manière appropriée des en-têtes HTTP.
+const helmet = require('helmet');
+
 const path = require('path');
 const postRoutes = require('./routes/post');
 const postImgRoutes = require('./routes/postImg');
@@ -28,6 +32,10 @@ app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   next();
 });
+
+// La fonction helmet de niveau supérieur est un wrapper autour
+// de 15 middlewares plus petits, dont 11 sont activés par défaut.
+app.use(helmet());
 
 app.use(express.json());
 
