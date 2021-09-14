@@ -3,8 +3,6 @@
 ![logo Groupomania](https://github.com/Ahmedson/groupomania/blob/main/frontend/src/assets/logoLogin.png)
 ## Spécifications 
 
-***
-
 - La création d'un compte doit être simple et possible depuis un téléphone mobile.
 - Le profil doit contenir très peu d'informations pour que sa complétion soit rapide.
 - La suppression d'un compte doit être possible.
@@ -13,14 +11,15 @@
 - Les utilisateur doivent pouvoir facilement repéter les dernières participations des employés
 - Le ou la chargé-e de communication Groupomania doit pouvoir modérer les interactions entre salariés
 
+***
+
 ## Requis pour le lancement du projet
 
-***
-
 Node.js / MySQL / Vue.js 
-## Base de données
 
 ***
+
+## Base de données
 
 1. Créer une base données MYSQL
 2. Dans le fichier Models.js (backend/models/Models.js) ligne 3 : remplacer les renseignements d'accès à la DB par les vôtres :
@@ -37,9 +36,9 @@ Node.js / MySQL / Vue.js
 181 //     console.log('Error syncing the table and model')
 182 //   })
 ```
-## Backend
-
 ***
+
+## Backend
 
 1. Dans le dossier backend, depuis votre terminal lancer la commande :
 
@@ -53,9 +52,9 @@ npm install
 node server (ou nodemon server)
 ```
 
-## Frontend
-
 ***
+
+## Frontend
 
 1. Dans le dossier front, depuis votre terminal lancer la commande :
 
@@ -75,11 +74,13 @@ npm run serve
 http://localhost/8080
 ```
 
-## Utilisation
-
 ***
+
+## Utilisation
 
 - L'application est prête à être utilisée
 - Aucun compte existant
 - Le premier compte crée est le seul qui possédera les droits administrateur
 - Découvrez l'application de manière intuitive
+- 
+***
