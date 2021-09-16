@@ -60,8 +60,9 @@ exports.modifyEmail = (req, res, next) => {
 exports.modifyPicture = (req, res, next) => {
   User.findOne({ where: { user_id: req.params.id } })
     .then( user => {
-      const filename = user.picture.split('/images')[1];
-
+      let filename;
+      if (user.picture !== null ){
+        filename = user.picture.split('/images')[1];
       fs.unlink(`images/${filename}`, () => {
         User.update({ picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` }, {
           where: {
@@ -71,6 +72,15 @@ exports.modifyPicture = (req, res, next) => {
         .then(() => res.status(200).json({ message: "Photo de profil modifié" }))
         .catch(error => res.status(400).json(error))
       })
+    } else {
+      User.update({ picture: `${req.protocol}://${req.get('host')}/images/${req.file.filename}` }, {
+        where: {
+          user_id: req.params.id
+        }
+      })
+      .then(() => res.status(200).json({ message: "Photo de profil modifié" }))
+      .catch(error => res.status(400).json(error))
+    }
     })
     .catch(error => res.status(400).json(error))
 }
